@@ -3,13 +3,118 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../lib/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  CUSTOMER
+  WAITER
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String?
+  email     String   @unique
+  password  String?
+  role      Role     @default(CUSTOMER)
+
+  createdAt DateTime @default(now())
+
+  cafes     Cafe[]   @relation("OwnerCafes")
+  staff     Staff?
+  orders    Order[]
+}
+
+model Cafe {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  logo        String?
+
+  ownerId     String
+  owner       User     @relation("OwnerCafes", fields: [ownerId], references: [id])
+
+  tables      CafeTable[]
+  menuItems   MenuItem[]
+  orders      Order[]
+  staff       Staff[]
+
+  createdAt   DateTime @default(now())
+}
+
+model Staff {
+  id      String @id @default(uuid())
+
+  userId  String @unique
+  cafeId  String
+
+  user    User  @relation(fields: [userId], references: [id])
+  cafe    Cafe  @relation(fields: [cafeId], references: [id])
+
+  orders  Order[]
+}
+
+model CafeTable {
+  id      String @id @default(uuid())
+  number  Int
+
+  cafeId  String
+  cafe    Cafe  @relation(fields: [cafeId], references: [id])
+
+  orders  Order[]
+}
+
+model MenuItem {
+  id        String  @id @default(uuid())
+  name      String
+  price     Float
+  category  String
+  image     String?
+  available Boolean @default(true)
+
+  cafeId    String
+  cafe      Cafe   @relation(fields: [cafeId], references: [id])
+
+  orderItems OrderItem[]
+}
+
+model Order {
+  id         String @id @default(uuid())
+
+  cafeId     String
+  customerId String
+  staffId    String?
+  tableId    String?
+
+  status     String @default("PENDING")
+  total      Float
+
+  cafe       Cafe       @relation(fields: [cafeId], references: [id])
+  customer   User       @relation(fields: [customerId], references: [id])
+  staff      Staff?     @relation(fields: [staffId], references: [id])
+  table      CafeTable? @relation(fields: [tableId], references: [id])
+
+  items      OrderItem[]
+
+  createdAt  DateTime @default(now())
+}
+
+model OrderItem {
+  id         String @id @default(uuid())
+
+  orderId    String
+  menuItemId String
+
+  quantity   Int
+  price      Float
+
+  order      Order    @relation(fields: [orderId], references: [id])
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
 }

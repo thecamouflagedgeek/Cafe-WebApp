@@ -1,8 +1,14 @@
-import { NextResponse } from "next/server"
+import {prisma} from "@/lib/prisma"
 
-export async function GET(){
+import {NextResponse} from"next/server"
+
+export async function GET()
+{
+    const users=await prisma.user.findMany()
+
     return NextResponse.json({
         status:"ok",
-        message:"Backend"
+        db:"Connected",
+        usersCount:users.length
     })
 }
