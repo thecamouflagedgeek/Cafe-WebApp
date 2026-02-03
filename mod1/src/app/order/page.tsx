@@ -205,7 +205,7 @@ export default function OrderPage() {
     }, [selectedCategory, searchQuery]);
 
     return (
-        <main className="min-h-screen bg-background text-foreground transition-colors duration-300">
+        <main className="min-h-screen overflow-x-hidden bg-background text-foreground transition-colors duration-300">
             {/* Custom Sticky Header for Order Page to match Home Page placement */}
             <div className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container mx-auto max-w-7xl h-16 flex items-center justify-between px-4 md:px-6">
@@ -217,11 +217,11 @@ export default function OrderPage() {
                         <span className="font-medium">Back to Home</span>
                     </Link>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 pr-28">
                         <ModeToggle />
 
                         {/* Staggered Menu */}
-                        <div className="relative h-10 w-24 flex items-center justify-end">
+                        <div className="fixed top-0 right-0 h-screen w-24">
                             <StaggeredMenu
                                 items={[
                                     { label: 'Home', link: '/' },
