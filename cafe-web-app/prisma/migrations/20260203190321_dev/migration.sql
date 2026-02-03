@@ -61,10 +61,11 @@ CREATE TABLE "Order" (
     "id" TEXT NOT NULL,
     "cafeId" TEXT NOT NULL,
     "customerId" TEXT NOT NULL,
+    "sessionId" TEXT NOT NULL,
     "staffId" TEXT,
     "tableId" TEXT,
     "status" TEXT NOT NULL DEFAULT 'PENDING',
-    "total" DOUBLE PRECISION NOT NULL,
+    "total" DOUBLE PRECISION,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
